@@ -69,3 +69,39 @@
             const url = document.getElementById('url').value;
             if (!url) {
                 alert('لطفا لینک را وارد کنید');
+                return;
+            }
+
+            // نمایش نوار پیشرفت
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            progressBar.style.display = 'block';
+
+            // شبیه‌سازی پر شدن نوار پیشرفت
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                } else {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                }
+            }, 100);
+
+            try {
+                const response = await fetch(`https://api.downloadgram.org/fetch?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
+                if (data.video) {
+                    document.getElementById('result').innerHTML = `<a href="${data.video}" download>دانلود ویدیو</a>`;
+                } else {
+                    document.getElementById('result').innerHTML = 'ویدیو یافت نشد یا امکان دانلود وجود ندارد.';
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'خطا در دانلود ویدیو.';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
